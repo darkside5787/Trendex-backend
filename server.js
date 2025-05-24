@@ -10,8 +10,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
+// MongoDB connection (Fixed: Using DATABASE_URL from .env)
+mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -33,3 +33,6 @@ app.get('/', (req, res) => res.send('Trendex Backend is running'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Debugging step (Shows the environment variable)
+console.log("Database URL:", process.env.DATABASE_URL);
