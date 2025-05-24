@@ -10,13 +10,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection (Fixed: Using DATABASE_URL from .env)
+// Debugging step to verify environment variable
+console.log("Database URL:", process.env.DATABASE_URL);
+if (!process.env.DATABASE_URL) {
+  console.error("Error: DATABASE_URL not found in .env file");
+  process.exit(1);
+}
+
+// MongoDB connection with improved error handling
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB error:', err));
+}).then(() => {
+  console.log('MongoDB connected');
+}).catch(err => {
+  console.error('MongoDB connection failed:', err);
+  process.exit(1);
+});
 
 // Routes
 app.post('/submit', async (req, res) => {
@@ -34,5 +44,10 @@ app.get('/', (req, res) => res.send('Trendex Backend is running'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Debugging step (Shows the environment variable)
-console.log("Database URL:", process.env.DATABASE_URL);
+require('dotenv').config();
+console.log("Database URL:", process.env.DATABASE_URL); // Debugging step
+if (!process.env.DATABASE_URL) {
+  console.error("Error: DATABASE_URL not found in .env file");
+  process.exit(1);
+}
+
